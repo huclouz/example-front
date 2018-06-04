@@ -1,30 +1,23 @@
 # booksearch-front
 
-> A Vue.js project
+> Example-FrontPage(VueJS 2.2)
 
 ## Build Setup
 
 ``` bash
-# install dependencies
+# 의존 다운로드
 npm install
 
-# serve with hot reload at localhost:8080
+# 개발버전 프론트엔드 구동( Port: 9090 )
 npm run dev
 
-# build for production with minification
+# 상용 버전 빌드
 npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## 빌드 후 단계
+1. 빌드 이후 dist/static 폴더에 생성되는 js, css복사
+2. backend프로젝트 내의 /src/main/resources/static/에 붙여넣기
+3. src/main/webapp/WEB-INF/jsp/index.jsp 파일 내용은 index.html의 내용으로 대체
+4. static resource의 경로가 다르므로 index.jsp에서 /static/ 내용을 제거 해주면 됩니다.
+
