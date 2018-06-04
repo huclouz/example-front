@@ -114,7 +114,7 @@
             <v-card-title>
               <div>
                 <h1><span class="grey--text">{{item.title}}</span></h1>
-                <!--<span>저자 : {{item.authors.toString()}}</span><br>-->
+                <span>저자 : {{item.authors.toString()}}</span><br>
                 <div><span>출판사 : {{item.publisher}}</span></div>
                 <span>내용 : {{item.contents}}</span>
               </div>
