@@ -236,7 +236,7 @@
 <script>
   import axios from 'axios'
   const crypto = require('crypto')
-  const prefix = "http://localhost:8080"
+  const prefix = ""
   export default {
     data: () => ({
       loginDialog : false,
@@ -381,9 +381,9 @@
             this.dataloading = false
           })
       },
-      detail: function (isbn, title, bookmarkId) {
+      detail: function (orginIsbn, title, bookmarkId) {
         var firstIsbn;
-        for ( var isbn of isbn.split(' ')) {
+        for ( var isbn of orginIsbn.split(' ')) {
           if ( isbn != '') {
             firstIsbn = isbn;
             break;
@@ -402,7 +402,7 @@
               // isbn + title로 무결성 보장, api는 모두 or 조건이기때문에 이렇게 사용합니다.
               if ( title == item.title ) {
                 item.authors = item.authors.toString()
-                item.isbookmarked = this.isBookMark(isbn)
+                item.isbookmarked = this.isBookMark(orginIsbn)
                 item.bookmarkId = bookmarkId
                 this.detailData = item
               }
@@ -459,7 +459,10 @@
         })
       },
       isBookMark: function(isbn){
-        return this.bookmarks.find(x => x.bookIsbn === isbn) ? true : false
+        for ( var listIsbn of this.bookmarks)
+          if ( listIsbn.bookIsbn == isbn )
+            return true
+        return false
       },
       convertFormData :function(object) {
         const formData = new FormData()
