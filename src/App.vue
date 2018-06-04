@@ -236,6 +236,7 @@
 <script>
   import axios from 'axios'
   const crypto = require('crypto')
+  const prefix = "http://localhost:8080"
   export default {
     data: () => ({
       loginDialog : false,
@@ -289,7 +290,7 @@
         }
         member.password = this.encrypt(member.password)
         member.c_password = this.encrypt(member.c_password)
-        axios.post('/members/signup', this.convertFormData(member))
+        axios.post(prefix+'/members/signup', this.convertFormData(member))
           .then(response =>{
             this.memberDialog = false
             this.snackbarText = '축하합니다! 회원가입 되셨습니다.'
@@ -313,7 +314,7 @@
 
         var password = this.encrypt(this.password)
         axios({
-          url : '/members/login',
+          url : prefix+'/members/login',
           data : {
             email : this.email,
             password : password
@@ -355,7 +356,7 @@
           this.dataloading = false
         }
 
-        axios.get('/books/cat/' + this.cat + '/keyword/' + encodeURI(this.searchText) + '/size/' + this.selectedPagesize + '/page/' + this.currentPage)
+        axios.get(prefix+'/books/cat/' + this.cat + '/keyword/' + encodeURI(this.searchText) + '/size/' + this.selectedPagesize + '/page/' + this.currentPage)
           .then(response => {
             if ( isNext == 1) {
               for ( var item of response.data.data) {
@@ -370,6 +371,9 @@
             this.totalPage = Math.ceil(this.totalCount/this.selectedPagesize)
             this.isEnd = response.data.isEnd
             this.dataloading = false
+            if (this.token != '') {
+              this.getHistories()
+            }
           })
           .catch(response => {
             this.snackbarText = '도서정보를 검색 중 오류가 발생하였습니다.'
@@ -378,9 +382,20 @@
           })
       },
       detail: function (isbn, title, bookmarkId) {
-        var firstIsbn = isbn.split(' ')[0]
+        var firstIsbn;
+        for ( var isbn of isbn.split(' ')) {
+          if ( isbn != '') {
+            firstIsbn = isbn;
+            break;
+          }
+        }
+        if ( !firstIsbn ) {
+          this.snackbarText = 'ISBN정보가 누락되어 도서정보를 상세하게 표시할 수 없습니다.'
+          this.snackbar = true
+          return;
+        }
         this.detailData = {}
-        axios.get('/books/'+firstIsbn)
+        axios.get(prefix+'/books/'+firstIsbn)
           .then(response => {
             this.detailDialog = true
             for (var item of response.data) {
@@ -399,7 +414,7 @@
           })
       },
       getBookmarks: function(){
-        axios.get('/books/marks')
+        axios.get(prefix+'/books/marks')
           .then(response => {
             this.bookmarks = response.data
           })
@@ -409,7 +424,7 @@
           })
       },
       getHistories : function(){
-        axios.get('/books/histories')
+        axios.get(prefix+'/books/histories')
           .then(response => {
             this.histories = response.data
           })
@@ -433,7 +448,7 @@
         var formData = new FormData()
         formData.append('bookIsbn', isbn)
         formData.append('bookTitle', title)
-        axios.post('/books/marks', formData)
+        axios.post(prefix+'/books/marks', formData)
           .then(response =>{
             this.snackbarText = '북마크에 추가되었습니다.'
             this.snackbar = true
@@ -452,7 +467,7 @@
         return formData
       },
       deleteBookMark: function (bookmarkid) {
-        axios.delete('/books/marks/'+bookmarkid)
+        axios.delete(prefix+'/books/marks/'+bookmarkid)
           .then(response =>{
             this.detailDialog = false
             this.snackbarText = '북마크가 제거 되었습니다.'
